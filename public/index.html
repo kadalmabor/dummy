@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Voting - Dummy Account Generator</title>
+    <style>
+        :root {
+            --primary-color: #4F46E5;
+            --primary-hover: #4338CA;
+            --bg-color: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --text-main: #111827;
+            --text-muted: #6B7280;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            margin-top: 0;
+            color: var(--text-main);
+        }
+
+        p.subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn:disabled {
+            background-color: #9CA3AF;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            border-radius: 8px;
+            display: none;
+            text-align: left;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-container h3 {
+            margin-top: 0;
+            color: #1E3A8A;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .credential-group {
+            margin-bottom: 0.75rem;
+        }
+
+        .credential-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #3B82F6;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .credential-value {
+            display: flex;
+            align-items: center;
+            background: #FFFFFF;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .credential-value input {
+            flex-grow: 1;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            font-family: monospace;
+            font-size: 1rem;
+            color: #111827;
+            background: transparent;
+            outline: none;
+        }
+
+        .copy-btn {
+            background: #E5E7EB;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #4B5563;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #D1D5DB;
+        }
+
+        .link-to-app {
+            display: inline-block;
+            margin-top: 1.5rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .link-to-app:hover {
+            text-decoration: underline;
+        }
+
+        .error-msg {
+            color: #DC2626;
+            background-color: #FEF2F2;
+            border: 1px solid #FCA5A5;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            display: none;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <span class="icon">🚀</span>
+        <h1>Public Test</h1>
+        <p class="subtitle">Buat akun dummy instan untuk mencoba aplikasi E-Voting tanpa harus registrasi manual.</p>
+        
+        <button id="generateBtn" class="btn" onclick="generateAccount()">Buat Akun Dummy (1x Pencet)</button>
+        
+        <div id="loadingIndicator" style="display: none; margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">
+            ⏳ Membuat akun...
+        </div>
+
+        <div id="errorContainer" class="error-msg"></div>
+
+        <div id="resultContainer" class="result-container">
+            <h3>🎉 Akun Berhasil Dibuat!</h3>
+            
+            <div class="credential-group">
+                <label>Student ID (NIM)</label>
+                <div class="credential-value">
+                    <input type="text" id="resultNim" readonly>
+                    <button class="copy-btn" onclick="copyToClipboard('resultNim')">Copy</button>
+                </div>
+            </div>
+            
+            <div class="credential-group">
+                <label>Password</label>
+                <div class="credential-value">
+                    <input type="text" id="resultPassword" readonly>
+                    <button class="copy-btn" onclick="copyToClipboard('resultPassword')">Copy</button>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="http://localhost:3000/login" target="_blank" class="link-to-app">
+                    Buka Aplikasi E-Voting ➔
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function generateAccount() {
+            const btn = document.getElementById('generateBtn');
+            const loading = document.getElementById('loadingIndicator');
+            const resultBox = document.getElementById('resultContainer');
+            const errorBox = document.getElementById('errorContainer');
+            
+            // UI Reset
+            btn.disabled = true;
+            loading.style.display = 'block';
+            resultBox.style.display = 'none';
+            errorBox.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/generate-dummy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('resultNim').value = data.studentId;
+                    document.getElementById('resultPassword').value = data.password;
+                    resultBox.style.display = 'block';
+                    btn.textContent = "Buat Akun Lainnya";
+                } else {
+                    throw new Error(data.error || 'Terjadi kesalahan pada server');
+                }
+            } catch (err) {
+                errorBox.textContent = `❌ Gagal membuat akun: ${err.message}`;
+                errorBox.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                loading.style.display = 'none';
+            }
+        }
+
+        function copyToClipboard(elementId) {
+            const copyText = document.getElementById(elementId);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand("copy");
+            
+            // Visual feedback
+            const btn = copyText.nextElementSibling;
+            const originalText = btn.textContent;
+            btn.textContent = "Copied!";
+            btn.style.background = "#D1FAE5";
+            btn.style.color = "#065F46";
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = "#E5E7EB";
+                btn.style.color = "#4B5563";
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
