@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 
 // Load environment from dummy's own .env
 require('dotenv').config({ path: path.join(__dirname, '.env') });
@@ -27,7 +28,18 @@ const StudentSchema = new mongoose.Schema({
 });
 const Student = mongoose.models.Student || mongoose.model('Student', StudentSchema);
 
-app.post('/api/generate-dummy', async (req, res) => {
+const dummyAccountLimiter = rateLimit({
+    windowMs: 5 * 60 * 1000, // 5 menit
+    max: 1, // Limit setiap IP ke 1 request per windowMs
+    message: {
+        success: false,
+        error: 'Pembuatan dummy account dibatasi 1 kali setiap 5 menit. Silakan coba lagi nanti.'
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+app.post('/api/generate-dummy', dummyAccountLimiter, async (req, res) => {
     try {
         // Connect to DB if not connected
         if (mongoose.connection.readyState === 0) {
