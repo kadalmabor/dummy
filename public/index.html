@@ -233,6 +233,9 @@
 
     <script>
         async function generateAccount() {
+            const nextTime = localStorage.getItem('nextDummyGenerateTime');
+            if (nextTime && (parseInt(nextTime) - Date.now() > 0)) return;
+
             const btn = document.getElementById('generateBtn');
             const loading = document.getElementById('loadingIndicator');
             const resultBox = document.getElementById('resultContainer');
@@ -241,7 +244,6 @@
             // UI Reset
             btn.disabled = true;
             loading.style.display = 'block';
-            resultBox.style.display = 'none';
             errorBox.style.display = 'none';
 
             try {
@@ -256,18 +258,61 @@
                     document.getElementById('resultNim').value = data.studentId;
                     document.getElementById('resultPassword').value = data.password;
                     resultBox.style.display = 'block';
-                    btn.textContent = "Buat Akun Lainnya";
+                    
+                    // Set 5 minute cooldown
+                    const cooldownEnd = Date.now() + 5 * 60 * 1000;
+                    localStorage.setItem('nextDummyGenerateTime', cooldownEnd);
+                    updateCountdown();
                 } else {
+                    if (response.status === 429) {
+                        // Rate limited by backend, set cooldown arbitrarily or suggest waiting
+                        throw new Error('Terlalu banyak request. Silakan coba lagi dalam 5 menit.');
+                    }
                     throw new Error(data.error || 'Terjadi kesalahan pada server');
                 }
             } catch (err) {
                 errorBox.textContent = `❌ Gagal membuat akun: ${err.message}`;
                 errorBox.style.display = 'block';
-            } finally {
                 btn.disabled = false;
+                updateCountdown();
+            } finally {
                 loading.style.display = 'none';
             }
         }
+
+        function updateCountdown() {
+            const nextTime = localStorage.getItem('nextDummyGenerateTime');
+            const btn = document.getElementById('generateBtn');
+            const resultBox = document.getElementById('resultContainer');
+            
+            if (nextTime) {
+                const remaining = parseInt(nextTime) - Date.now();
+                if (remaining > 0) {
+                    btn.disabled = true;
+                    const minutes = Math.floor(remaining / 60000);
+                    const seconds = Math.floor((remaining % 60000) / 1000);
+                    btn.textContent = `Tunggu ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    // Tetap tampilkan result jika ada
+                    if (document.getElementById('resultNim').value) {
+                         resultBox.style.display = 'block';
+                    }
+                } else {
+                    btn.disabled = false;
+                    btn.textContent = "Buat Akun Lainnya";
+                    localStorage.removeItem('nextDummyGenerateTime');
+                }
+            } else {
+                btn.disabled = false;
+                if (!document.getElementById('resultNim').value) {
+                    btn.textContent = "Buat Akun Dummy (1x Pencet)";
+                } else {
+                    btn.textContent = "Buat Akun Lainnya";
+                }
+            }
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
 
         function copyToClipboard(elementId) {
             const copyText = document.getElementById(elementId);
