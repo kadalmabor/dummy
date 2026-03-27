@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -96,8 +97,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .result-container h3 {
@@ -179,16 +187,18 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="card">
         <span class="icon">🚀</span>
         <h1>Public Test</h1>
         <p class="subtitle">Buat akun dummy instan untuk mencoba aplikasi E-Voting tanpa harus registrasi manual.</p>
-        
+
         <button id="generateBtn" class="btn" onclick="generateAccount()">Buat Akun Dummy (1x Pencet)</button>
-        
-        <div id="loadingIndicator" style="display: none; margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">
+
+        <div id="loadingIndicator"
+            style="display: none; margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">
             ⏳ Membuat akun...
         </div>
 
@@ -196,7 +206,7 @@
 
         <div id="resultContainer" class="result-container">
             <h3>🎉 Akun Berhasil Dibuat!</h3>
-            
+
             <div class="credential-group">
                 <label>Student ID (NIM)</label>
                 <div class="credential-value">
@@ -204,7 +214,7 @@
                     <button class="copy-btn" onclick="copyToClipboard('resultNim')">Copy</button>
                 </div>
             </div>
-            
+
             <div class="credential-group">
                 <label>Password</label>
                 <div class="credential-value">
@@ -214,7 +224,7 @@
             </div>
 
             <div style="text-align: center;">
-                <a href="http://localhost:3000/login" target="_blank" class="link-to-app">
+                <a href="https://frontend-production-a2c6.up.railway.app/login" target="_blank" class="link-to-app">
                     Buka Aplikasi E-Voting ➔
                 </a>
             </div>
@@ -227,7 +237,7 @@
             const loading = document.getElementById('loadingIndicator');
             const resultBox = document.getElementById('resultContainer');
             const errorBox = document.getElementById('errorContainer');
-            
+
             // UI Reset
             btn.disabled = true;
             loading.style.display = 'block';
@@ -264,14 +274,14 @@
             copyText.select();
             copyText.setSelectionRange(0, 99999); // For mobile devices
             document.execCommand("copy");
-            
+
             // Visual feedback
             const btn = copyText.nextElementSibling;
             const originalText = btn.textContent;
             btn.textContent = "Copied!";
             btn.style.background = "#D1FAE5";
             btn.style.color = "#065F46";
-            
+
             setTimeout(() => {
                 btn.textContent = originalText;
                 btn.style.background = "#E5E7EB";
@@ -280,4 +290,5 @@
         }
     </script>
 </body>
+
 </html>

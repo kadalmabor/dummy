@@ -42,7 +42,7 @@ app.post('/api/generate-dummy', async (req, res) => {
         const randomNum = Math.floor(1000 + Math.random() * 9000);
         const studentId = `2250${randomNum}`;
         const name = `Dummy User ${randomNum}`;
-        const password = 'password123';
+        const password = `password${randomNum}`;
 
         // Hash password
         const salt = await bcrypt.genSalt(10);
