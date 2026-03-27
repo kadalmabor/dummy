@@ -259,6 +259,10 @@
                     document.getElementById('resultPassword').value = data.password;
                     resultBox.style.display = 'block';
                     
+                    // Save to localStorage
+                    localStorage.setItem('dummyNim', data.studentId);
+                    localStorage.setItem('dummyPassword', data.password);
+                    
                     // Set 5 minute cooldown
                     const cooldownEnd = Date.now() + 5 * 60 * 1000;
                     localStorage.setItem('nextDummyGenerateTime', cooldownEnd);
@@ -285,6 +289,14 @@
             const btn = document.getElementById('generateBtn');
             const resultBox = document.getElementById('resultContainer');
             
+            const savedNim = localStorage.getItem('dummyNim');
+            const savedPassword = localStorage.getItem('dummyPassword');
+            
+            if (savedNim && savedPassword) {
+                document.getElementById('resultNim').value = savedNim;
+                document.getElementById('resultPassword').value = savedPassword;
+            }
+            
             if (nextTime) {
                 const remaining = parseInt(nextTime) - Date.now();
                 if (remaining > 0) {
@@ -300,6 +312,9 @@
                     btn.disabled = false;
                     btn.textContent = "Buat Akun Lainnya";
                     localStorage.removeItem('nextDummyGenerateTime');
+                    if (document.getElementById('resultNim').value) {
+                         resultBox.style.display = 'block';
+                    }
                 }
             } else {
                 btn.disabled = false;
@@ -307,6 +322,7 @@
                     btn.textContent = "Buat Akun Dummy (1x Pencet)";
                 } else {
                     btn.textContent = "Buat Akun Lainnya";
+                    resultBox.style.display = 'block';
                 }
             }
         }
